@@ -65,45 +65,5 @@ class CachedGeneratorTest extends TestCase
         }
 
         $this->assertEquals(6, $this->iterations);
-
-
-        $count = 1;
-        foreach($cachedGenerator() as $item) {
-            $this->assertEquals($count, $item);
-            if($count++ > 5)
-                break;
-        }
-
-        $this->assertEquals(6, $this->iterations);
-
-        $yieldCount = 0;
-        $gen = function () use(&$yieldCount) {
-            $yieldCount++;
-            yield "test-user";
-
-            $yieldCount++;
-            yield "admin";
-
-            $yieldCount++;
-            yield "normal-user";
-
-            $yieldCount++;
-            yield "root";
-
-            $yieldCount++;
-            yield "anonymous";
-        };
-
-        $yieldCount = 0;
-        $user = NULL;
-
-        foreach ($gen() as $value) {
-            if($value == "root") {
-                $user = $value;
-                break;
-            }
-        }
-        if($user)
-            echo "Administrator found at iteration $yieldCount.\n";
     }
 }
