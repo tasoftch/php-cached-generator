@@ -1,8 +1,4 @@
-# PHP Utilities
-This package contains several utilities I often use.
-
-### Cachable generator
-```TASoft\Utility\CachableGenerator```
+# Cached Generator
 
 #### Issue
 A generator is a forward only iterator.  
@@ -84,14 +80,14 @@ if($user)
 // Of course, you might continue with the same generator, but if the root user came before admin, you'll never get it.
 
 ```
-#### Solution: The cachable generator
+#### Solution: My Cached Generator
 It is an object that takes a generator and its invocation will forward to the generator.  
 But in addition, it caches the yielded values.  
 Iterating again, it will start using the cached values and continue yielding from the generator until the generator is not valid anymore.
 
 ```php
 <?php
-use TASoft\Utility\CachedGenerator;
+use TASoft\Util\CachedGenerator;
 
 $yieldCount = 0;
 $gen = new CachedGenerator(
@@ -128,4 +124,21 @@ if($user)
     echo "Administrator found at iteration $yieldCount.\n";
 
 // Output: Administrator found at iteration 2.
+
+// Now you need information about the root user:
+$yieldCount = 0;
+$user = NULL;
+
+foreach ($gen() as $value) {
+    if($value == "root") {
+        $user = $value;
+        break;
+    }
+}
+if($user)
+    echo "Administrator found at iteration $yieldCount.\n";
+
+// Output: Administrator found at iteration 2.
+// It is 2 again because the first two users are cached and the generator is not called.
+// After the cache end is reached, the cached generator will continue forwarding to the original generator.
 ```
